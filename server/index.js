@@ -20,6 +20,8 @@ app.get('/repos', function (req, res) {
 
 let port = 1128;
 
+app.use(express.static('../client/dist'));
+
 app.listen(port, function() {
   console.log(`listening on port ${port}`);
 });
