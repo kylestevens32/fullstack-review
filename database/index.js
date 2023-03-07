@@ -33,17 +33,15 @@ let save = (response, cb) => {
       _id: repo.id,
       name: repo.name,
       owner: repo.owner.login,
-      url: repo.url,
+      url: repo.html_url,
       forks: repo.forks
     })
     newRepos.push(newRepo);
   })
   Repo.insertMany(newRepos)
     .then((docs) => {
-      console.log(docs);
       cb(null);
     }).catch((err) => {
-      console.log(err);
       cb(err);
     });
 }
@@ -55,7 +53,7 @@ let getTopRepos = (cb) => {
     } else {
       cb(null, docs)
     }
-  }).limit(25)
+  }).sort({ forks : -1 }).limit(25)
 }
 
 module.exports.save = save;

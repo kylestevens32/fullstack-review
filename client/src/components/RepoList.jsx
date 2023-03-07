@@ -5,8 +5,10 @@ const RepoList = ({ repos }) => {
   return (
     <div>
       <h4> Repo List Component </h4>
-      <Repo />
-      There are {repos.length} repos.
+      {repos.map((repo) => {
+        return <Repo key={repo._id} repo={repo} />
+      })}
+      Showing the top {repos.length} repos.
     </div>
   )
 }
