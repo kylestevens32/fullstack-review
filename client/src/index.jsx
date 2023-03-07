@@ -14,7 +14,15 @@ const App = () => {
     axios.post('/repos', {
       username: term
     })
+    .then((response) => {
+      console.log('get complete');
+    })
+    .catch((err) => {
+      console.log('search get request failed: ', err)
+    })
   }
+
+  // useEffect to get for the page
 
   return (
     <div>

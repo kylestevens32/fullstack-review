@@ -2,24 +2,61 @@ const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/fetcher');
 
 let repoSchema = mongoose.Schema({
-  // TODO: your schema here!
-  _id: Number,
+  _id: Number, // automatically unique
   name: String,
   owner: String,
   url: String,
-  size: Number,
-  language: String,
-  description: String,
   forks: Number,
-  createdAt: Date
+  // size: Number,
+  // language: String,
+  // description: String,
+  // createdAt: Date
 });
 
 let Repo = mongoose.model('Repo', repoSchema);
 
-let save = (/* TODO */) => {
-  // TODO: Your code here
+// Repo.deleteMany({})
+//   .then(() => {
+//     Repo.find({})
+//       .then((results) => {
+//         console.log('Finding repo', results);
+//       })
+//   })
+
+
+let save = (response, cb) => {
   // This function should save a repo or repos to
   // the MongoDB
+  var newRepos = [];
+  response.data.forEach((repo) => {
+    var newRepo = new Repo({
+      _id: repo.id,
+      name: repo.name,
+      owner: repo.owner.login,
+      url: repo.url,
+      forks: repo.forks
+    })
+    newRepos.push(newRepo);
+  })
+  Repo.insertMany(newRepos)
+    .then((docs) => {
+      console.log(docs);
+      cb(null);
+    }).catch((err) => {
+      console.log(err);
+      cb(err);
+    });
+}
+
+let getTopRepos = (cb) => {
+  Repo.find((err, docs) => {
+    if (err) {
+      cb(err);
+    } else {
+      cb(null, docs)
+    }
+  }).limit(25)
 }
 
 module.exports.save = save;
+module.exports.getTopRepos = getTopRepos;
