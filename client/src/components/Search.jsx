@@ -8,7 +8,8 @@ const Search = ({ onSearch }) => {
     setTerm(e.target.value);
   }
 
-  const search = () => {
+  const search = (event) => {
+    event.preventDefault();
     onSearch(term);
   }
 

@@ -10,26 +10,23 @@ const App = () => {
   const [repos, setRepos] = useState([]);
 
   useEffect(() => {
-    getRequest();
-  }, [])
-
-  const getRequest = () => {
     axios.get('/repos')
       .then((response) => {
         setRepos(response.data);
       })
-      .catch((err) => {
-        console.log('Error getting top 25 repos after adding user', err)
-      })
-  }
+  }, [])
+
 
   const search = (term) => {
     console.log(`${term} was searched`);
     axios.post('/repos', {
       username: term
     })
+    .then(() => {
+      return axios.get('/repos');
+    })
     .then((response) => {
-      getRequest();
+      setRepos(response.data);
     })
     .catch((err) => {
       console.log('search get request failed: ', err)

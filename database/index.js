@@ -24,11 +24,11 @@ let Repo = mongoose.model('Repo', repoSchema);
 //   })
 
 
-let save = (response, cb) => {
+exports.save = (data, cb) => {
   // This function should save a repo or repos to
   // the MongoDB
   var newRepos = [];
-  response.data.forEach((repo) => {
+  data.forEach((repo) => {
     var newRepo = new Repo({
       _id: repo.id,
       name: repo.name,
@@ -38,7 +38,7 @@ let save = (response, cb) => {
     })
     newRepos.push(newRepo);
   })
-  Repo.insertMany(newRepos)
+  Repo.create(newRepos)
     .then((docs) => {
       cb(null);
     }).catch((err) => {
@@ -46,15 +46,18 @@ let save = (response, cb) => {
     });
 }
 
-let getTopRepos = (cb) => {
-  Repo.find((err, docs) => {
-    if (err) {
+exports.getTopRepos = (cb) => {
+  Repo.find({})
+    .sort('-forks')
+    .limit(25)
+    .exec()
+    .then((data) => {
+      cb(null, data);
+    })
+    .catch((err) => {
       cb(err);
-    } else {
-      cb(null, docs)
-    }
-  }).sort({ forks : -1 }).limit(25)
+    })
 }
 
-module.exports.save = save;
-module.exports.getTopRepos = getTopRepos;
+// module.exports.save = save;
+// module.exports.getTopRepos = getTopRepos;
